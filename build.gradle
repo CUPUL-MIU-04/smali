@@ -31,7 +31,16 @@
 
 apply plugin: 'idea'
 
-version = '2.5.3'
+// ======== CAMBIOS AQUÍ ========
+// Fuerza la versión que necesitas
+version = '2.5.3-a3836654'
+group = 'com.revoid'  // Asegúrate que el group sea com.revoid
+
+// Configuración para GitHub Packages
+def githubUsername = project.findProperty('gpr.user') ?: System.getenv('GITHUB_ACTOR')
+def githubToken = project.findProperty('gpr.key') ?: System.getenv('GITHUB_TOKEN')
+// ======== FIN DE CAMBIOS ========
+
 def jcommanderVersion = ''
 
 if (!('release' in gradle.startParameter.taskNames)) {
@@ -54,7 +63,8 @@ if (!('release' in gradle.startParameter.taskNames)) {
         versionSuffix = 'dev'
     }
 
-    version += "-${versionSuffix}"
+    // Comenta esto para evitar que se añada sufijo de Git
+    // version += "-${versionSuffix}"
 } else {
     jcommanderVersion = 'com.beust:jcommander:1.64'
 }
@@ -133,7 +143,8 @@ subprojects {
 
                     pom {
                         name = project.name
-                        url = 'http://smali.org'
+                        // ======== CAMBIO AQUÍ ========
+                        url = 'https://github.com/CUPUL-MIU-04/smali'
 
                         licenses {
                             license {
@@ -143,8 +154,10 @@ subprojects {
                             }
                         }
                         scm {
-                            connection = 'scm:git:git://github.com/JesusFreke/smali.git'
-                            developerConnection = 'scm:git:git@github.com:JesusFreke/smali.git'
+                            // ======== CAMBIO AQUÍ ========
+                            connection = 'scm:git:git://github.com/CUPUL-MIU-04/smali.git'
+                            developerConnection = 'scm:git:ssh://github.com:CUPUL-MIU-04/smali.git'
+                            url = 'https://github.com/CUPUL-MIU-04/smali'
                         }
                         developers {
                             developer {
@@ -152,13 +165,32 @@ subprojects {
                                 name = 'Ben Gruver'
                                 email = 'jesusfreke@jesusfreke.com'
                             }
+                            // ======== AÑADE TU EQUIPO AQUÍ ========
+                            developer {
+                                id = 'cupul-miu-04'
+                                name = 'CUPUL-MIU-04 Team'
+                            }
                         }
                     }
                 }
             }
-            if (rootProject.hasProperty('sonatypeUsername') && rootProject.hasProperty('sonatypePassword')) {
-                repositories {
+            
+            // ======== AÑADE ESTE BLOQUE DE REPOSITORIOS ========
+            repositories {
+                // Repositorio para GitHub Packages
+                maven {
+                    name = 'GitHubPackages'
+                    url = uri('https://maven.pkg.github.com/CUPUL-MIU-04/smali')
+                    credentials {
+                        username = githubUsername
+                        password = githubToken
+                    }
+                }
+                
+                // Repositorio para Sonatype (opcional, mantenido del original)
+                if (rootProject.hasProperty('sonatypeUsername') && rootProject.hasProperty('sonatypePassword')) {
                     maven {
+                        name = 'Sonatype'
                         url = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
                         credentials {
                             username sonatypeUsername
@@ -193,6 +225,7 @@ buildscript {
 }
 
 wrapper {
-    gradleVersion = '6.8.2'
+    // ======== ACTUALIZA GRADLE ========
+    gradleVersion = '8.10.2'
     distributionType = Wrapper.DistributionType.ALL
 }
