@@ -6,4 +6,5 @@ dependencies {
     implementation("org.ow2.asm:asm-analysis:9.5")
     
     testImplementation("junit:junit:4.13.2")
+    testImplementation("org.mockito:mockito-core:5.4.0")  // Agrega esta línea
 }
