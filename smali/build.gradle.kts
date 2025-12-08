@@ -144,7 +144,7 @@ publishing {
     }
 }
 
-smali/dexlib2/build.gradle.kts
+dexlib2/build.gradle.kts
 dependencies {
     implementation("org.ow2.asm:asm:9.5")
     implementation("org.ow2.asm:asm-util:9.5")
