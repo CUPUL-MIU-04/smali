@@ -1,3 +1,8 @@
+plugins {
+    `java-library`
+    `maven-publish`
+}
+
 dependencies {
     implementation(project(":dexlib2"))
     implementation("com.beust:jcommander:1.82")
@@ -5,6 +10,19 @@ dependencies {
     
     // ANTLR runtime (necesario para algunas clases de util)
     implementation("org.antlr:antlr-runtime:3.5.2")
+    
+    // Dependencias para tests
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.mockito:mockito-core:5.4.0")
+}
+
+tasks.withType<JavaCompile> {
+    options.encoding = "UTF-8"
+    options.compilerArgs.addAll(listOf("-Xlint:deprecation", "-Xlint:unchecked"))
+}
+
+tasks.withType<Test> {
+    useJUnit()
 }
 
 // Configuración de publicación para GitHub Packages
