@@ -1,143 +1,104 @@
 plugins {
-    `java-library`
-    antlr
+    id("java")
+    id("antlr")
+    id("maven-publish")
 }
 
-dependencies {
-    implementation(project(":dexlib2"))
-    implementation(project(":util"))
-
-    // ANTLR 3 dependencies
-    antlr("org.antlr:antlr:3.5.2")
-    implementation("org.antlr:antlr-runtime:3.5.2")
-    implementation("org.antlr:stringtemplate:4.0.2")
-
-    implementation("com.google.guava:guava:32.1.2-android")
-    implementation("com.beust:jcommander:1.82")
-    implementation("com.google.code.gson:gson:2.10.1")
-
-    // JFlex dependency for generation
-    antlr("de.jflex:jflex:1.9.1")
-
-    testImplementation("junit:junit:4.13.2")
-    testImplementation("org.mockito:mockito-core:5.4.0")
-}
-
-// Configuración de ANTLR
-tasks.generateGrammarSource {
-    outputDirectory = file("${buildDir}/generated-src/antlr/main")
-    arguments = arguments + listOf("-visitor", "-message-format", "gnu")
-}
-
-// Tarea para generar el lexer con JFlex
-val generateJflex by tasks.registering(JavaExec::class) {
-    group = "build"
-    description = "Generates the lexer using JFlex"
-
-    classpath = configurations.antlr.get()
-    mainClass.set("jflex.Main")
-
-    args = listOf(
-        "-d", "${buildDir}/generated-src/jflex/main",
-        "src/main/jflex/smaliLexer.jflex"
-    )
-
-    doFirst {
-        mkdir("${buildDir}/generated-src/jflex/main")
+allprojects {
+    group = "com.github.CUPUL-MIU-04"
+    version = "2.5.3-a3836654"
+    
+    repositories {
+        mavenCentral()
+        google()
+        maven("https://jitpack.io")
+    }
+    
+    apply(plugin = "java")
+    
+    configure<JavaPluginExtension> {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
 }
 
-// Incluir el código generado en el classpath
-sourceSets.main {
-    java.srcDirs(
-        "src/main/java", 
-        "${buildDir}/generated-src/antlr/main",
-        "${buildDir}/generated-src/jflex/main"
-    )
-}
-
-// Hacer que compileJava dependa de generateJflex
-tasks.compileJava {
-    dependsOn(generateJflex)
-}
-
-// Configurar processResources para que dependa de generateGrammarSource
-tasks.processResources {
-    dependsOn(tasks.generateGrammarSource)
-
-    // Incluir los archivos .tokens generados por ANTLR
-    from("${buildDir}/generated-src/antlr/main") {
-        include("**/*.tokens")
+subprojects {
+    // Aplicar plugins comunes
+    apply(plugin = "java-library")
+    apply(plugin = "maven-publish")
+    
+    dependencies {
+        implementation("com.google.guava:guava:32.1.2-android")
+        implementation("com.google.code.findbugs:jsr305:3.0.2")
     }
-
-    // Propagar versión
-    inputs.property("version", project.version)
-    filesMatching("**/*.properties") {
-        expand("version" to project.version)
+    
+    tasks.withType<JavaCompile> {
+        options.encoding = "UTF-8"
+        options.compilerArgs.addAll(listOf("-Xlint:deprecation", "-Xlint:unchecked"))
     }
-}
-
-// Tarea para crear fatJar
-tasks.register<Jar>("fatJar") {
-    archiveBaseName.set("smali")
-    archiveClassifier.set("fat")
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-
-    from(sourceSets.main.get().output)
-    dependsOn(configurations.runtimeClasspath)
-    from({
-        configurations.runtimeClasspath.get()
-            .filter { it.name.endsWith("jar") }
-            .map { zipTree(it) }
-    })
-
-    manifest {
-        attributes("Main-Class" to "org.jf.smali.Main")
+    
+    tasks.withType<Test> {
+        useJUnit()
     }
-}
-
-tasks.named("build") {
-    dependsOn("fatJar")
-}
-
-// Configuración de publicación para GitHub Packages
-publishing {
-    publications {
-        register<MavenPublication>("gpr") {
-            from(components["java"])
-            
-            // Incluir el fatJar como artifact adicional
-            artifact(tasks.named("fatJar").get()) {
-                classifier = "fat"
+    
+    // Configuración de publicación para GitHub Packages
+    publishing {
+        repositories {
+            maven {
+                name = "GitHubPackages"
+                url = uri("https://maven.pkg.github.com/CUPUL-MIU-04/smali")
+                credentials {
+                    username = System.getenv("RE_USER") ?: project.findProperty("re_gpr_user")?.toString()
+                    password = System.getenv("RE_TOKEN") ?: project.findProperty("re_gpr_token")?.toString()
+                }
             }
-            
-            // Información del POM
-            pom {
-                name.set("Smali")
-                description.set("An assembler/disassembler for the dex format used by dalvik, Android's Java VM implementation")
-                url.set("https://github.com/CUPUL-MIU-04/smali")
+        }
+        
+        publications {
+            register<MavenPublication>("gpr") {
+                from(components["java"])
                 
-                licenses {
-                    license {
-                        name.set("BSD 2-Clause License")
-                        url.set("https://opensource.org/licenses/BSD-2-Clause")
+                // Configuración específica para cada submódulo
+                afterEvaluate {
+                    artifactId = project.name
+                    
+                    pom {
+                        name.set(project.name)
+                        description.set(project.description ?: "Smali/Baksmali tools")
+                        url.set("https://github.com/CUPUL-MIU-04/smali")
+                        
+                        licenses {
+                            license {
+                                name.set("BSD 2-Clause License")
+                                url.set("https://opensource.org/licenses/BSD-2-Clause")
+                            }
+                        }
+                        
+                        developers {
+                            developer {
+                                id.set("CUPUL-MIU-04")
+                                name.set("CUPUL-MIU-04 Team")
+                            }
+                        }
+                        
+                        scm {
+                            connection.set("scm:git:git://github.com/CUPUL-MIU-04/smali.git")
+                            developerConnection.set("scm:git:ssh://github.com:CUPUL-MIU-04/smali.git")
+                            url.set("https://github.com/CUPUL-MIU-04/smali")
+                        }
                     }
-                }
-                
-                developers {
-                    developer {
-                        id.set("CUPUL-MIU-04")
-                        name.set("CUPUL-MIU-04 Team")
-                    }
-                }
-                
-                scm {
-                    connection.set("scm:git:git://github.com/CUPUL-MIU-04/smali.git")
-                    developerConnection.set("scm:git:ssh://github.com:CUPUL-MIU-04/smali.git")
-                    url.set("https://github.com/CUPUL-MIU-04/smali")
                 }
             }
         }
     }
 }
-// EL ARCHIVO DEBE TERMINAR AQUÍ, NO DEBE HABER NADA MÁS
+
+// Tarea para publicar todos los módulos
+tasks.register("publishAllToGitHubPackages") {
+    dependsOn(
+        ":dexlib2:publishGprPublicationToGitHubPackagesRepository",
+        ":util:publishGprPublicationToGitHubPackagesRepository",
+        ":smali:publishGprPublicationToGitHubPackagesRepository",
+        ":baksmali:publishGprPublicationToGitHubPackagesRepository"
+    )
+}
