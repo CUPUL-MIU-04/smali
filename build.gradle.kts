@@ -1,11 +1,11 @@
 plugins {
     id("java")
     id("antlr")
-    id("maven-publish")  // Plugin para publicar en Maven
+    id("maven-publish")
 }
 
 allprojects {
-    group = "com.github.CUPUL-MIU-04"  // Cambiado a tu organización
+    group = "com.github.CUPUL-MIU-04"
     version = "2.5.3-a3836654"
     
     repositories {
@@ -14,7 +14,6 @@ allprojects {
         maven("https://jitpack.io")
     }
     
-    // Configurar Java para todos los proyectos
     apply(plugin = "java")
     
     configure<JavaPluginExtension> {
@@ -26,10 +25,9 @@ allprojects {
 subprojects {
     // Aplicar plugins comunes
     apply(plugin = "java-library")
-    apply(plugin = "maven-publish")  // Aplicar a todos los submódulos
+    apply(plugin = "maven-publish")
     
     dependencies {
-        // Dependencias comunes para todos los submódulos
         implementation("com.google.guava:guava:32.1.2-android")
         implementation("com.google.code.findbugs:jsr305:3.0.2")
     }
@@ -52,7 +50,6 @@ subprojects {
                 credentials {
                     username = System.getenv("RE_USER") ?: project.findProperty("re_gpr_user")?.toString()
                     password = System.getenv("RE_TOKEN") ?: project.findProperty("re_gpr_token")?.toString()
-}
                 }
             }
         }
