@@ -1,0 +1,7 @@
+package org.jf.util;
+
+public class ConsoleUtil {
+    public static int getConsoleWidth() {
+        return 80;
+    }
+}

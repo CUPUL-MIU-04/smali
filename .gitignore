@@ -1,0 +1,52 @@
+/.gradle
+/baksmali/build
+/dexlib/build
+/dexlib2/build
+/dexlib2/accessorTestGenerator/build
+/smali/build
+/util/build
+/smalidea/build
+*.iml
+*.ipr
+*.iws
+.idea
+
+# Gradle
+.gradle/
+build/
+out/
+bin/
+
+# Archivos generados
+*/generated-src/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# Eclipse
+.settings/
+.classpath
+.project
+
+# VSCode
+.vscode/
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Archivos temporales
+*.tmp
+*.temp
+
+# Archivos de compilación
+*.class
+
+# Archivos de configuración local
+local.properties
+gradle.properties
