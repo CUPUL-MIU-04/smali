@@ -17,8 +17,6 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
 
     // JFlex dependency for generation
-    // Nota: jflex se usa solo para generar el lexer, no en runtime
-    // Lo incluimos en antlr configuration
     antlr("de.jflex:jflex:1.9.1")
 
     testImplementation("junit:junit:4.13.2")
@@ -36,7 +34,6 @@ val generateJflex by tasks.registering(JavaExec::class) {
     group = "build"
     description = "Generates the lexer using JFlex"
 
-    // CORRECCIÓN: Usar configurations.antlr.get() en lugar de runtimeClasspath
     classpath = configurations.antlr.get()
     mainClass.set("jflex.Main")
 
@@ -143,28 +140,4 @@ publishing {
         }
     }
 }
-
-dexlib2/build.gradle.kts
-dependencies {
-    implementation("org.ow2.asm:asm:9.5")
-    implementation("org.ow2.asm:asm-util:9.5")
-    implementation("org.ow2.asm:asm-commons:9.5")
-    implementation("org.ow2.asm:asm-tree:9.5")
-    implementation("org.ow2.asm:asm-analysis:9.5")
-    
-    testImplementation("junit:junit:4.13.2")
-}
-
-publishing {
-    publications {
-        register<MavenPublication>("gpr") {
-            from(components["java"])
-            
-            pom {
-                name.set("Dexlib2")
-                description.set("A library for reading/writing Android dex files")
-                // ... resto de configuración similar
-            }
-        }
-    }
-}
+// EL ARCHIVO DEBE TERMINAR AQUÍ, NO DEBE HABER NADA MÁS
