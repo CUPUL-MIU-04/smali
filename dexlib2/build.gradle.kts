@@ -53,8 +53,8 @@ publishing {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/CUPUL-MIU-04/smali")
             credentials {
-                username = System.getenv("GITHUB_ACTOR") ?: project.findProperty("gpr.user")?.toString()
-                password = System.getenv("GITHUB_TOKEN") ?: project.findProperty("gpr.token")?.toString()
+                username = System.getenv("RE_USER") ?: project.findProperty("re_gpr_user")?.toString()
+                password = System.getenv("RE_TOKEN") ?: project.findProperty("re_gpr_token")?.toString()
             }
         }
     }
