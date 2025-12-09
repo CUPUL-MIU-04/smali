@@ -1,6 +1,7 @@
 plugins {
     id("java")
     id("antlr")
+    // Elimina id("maven-publish") de aquí
 }
 
 allprojects {
