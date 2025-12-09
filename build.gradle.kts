@@ -5,7 +5,7 @@ plugins {
 
 allprojects {
     group = "com.revoid"
-    version = "2.5.3-a3836654"
+    version = "2.5.3-a3836655"
     
     repositories {
         mavenCentral()
