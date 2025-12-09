@@ -4,7 +4,7 @@ plugins {
 }
 
 allprojects {
-    group = "com.github.CUPUL-MIU-04"
+    group = "com.revoid"
     version = "2.5.3-a3836654"
     
     repositories {
