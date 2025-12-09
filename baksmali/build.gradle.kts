@@ -79,3 +79,16 @@ publishing {
         }
     }
 }
+    
+    // AGREGA ESTE BLOQUE repositories:
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/CUPUL-MIU-04/smali")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR") ?: project.findProperty("gpr.user")?.toString()
+                password = System.getenv("GITHUB_TOKEN") ?: project.findProperty("gpr.token")?.toString()
+            }
+        }
+    }
+}
