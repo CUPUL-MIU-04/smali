@@ -32,5 +32,5 @@ jobs:
     - name: Publish to GitHub Packages
       run: ./gradlew publishAllToGitHubPackages --stacktrace
       env:
-        GITHUB_ACTOR: ${{ github.actor }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        RE_USER: ${{ github.actor }}
+        RE_TOKEN: ${{ secrets.RE_TOKEN }}
