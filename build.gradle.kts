@@ -23,7 +23,7 @@ allprojects {
 
 subprojects {
     apply(plugin = "java-library")
-    apply(plugin = "maven-publish")
+    apply(plugin = "maven-publish")  // ¡Esto es correcto!
     
     dependencies {
         implementation("com.google.guava:guava:32.1.2-android")
