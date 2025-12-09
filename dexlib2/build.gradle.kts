@@ -14,6 +14,7 @@ dependencies {
     testImplementation("org.mockito:mockito-core:5.4.0")
 }
 
+// Configuración de publicación para GitHub Packages
 publishing {
     publications {
         register<MavenPublication>("gpr") {
