@@ -23,6 +23,7 @@ tasks.withType<Test> {
     useJUnit()
 }
 
+// Configuración de publicación para GitHub Packages
 publishing {
     publications {
         register<MavenPublication>("gpr") {
