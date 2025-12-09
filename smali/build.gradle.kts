@@ -139,15 +139,16 @@ publishing {
             }
         }
     }
-}
-
-repositories {  // ¡AGREGA ESTE BLOQUE!
-    maven {
-        name = "GitHubPackages"
-        url = uri("https://maven.pkg.github.com/CUPUL-MIU-04/smali")
-        credentials {
-            username = System.getenv("RE_USER") ?: project.findProperty("re_gpr_user")?.toString()
-            password = System.getenv("RE_TOKEN") ?: project.findProperty("re_gpr_token")?.toString()
+    
+    // ¡Este bloque debe estar DENTRO de publishing!
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/CUPUL-MIU-04/smali")
+            credentials {
+                username = System.getenv("RE_USER") ?: project.findProperty("re_gpr_user")?.toString()
+                password = System.getenv("RE_TOKEN") ?: project.findProperty("re_gpr_token")?.toString()
+            }
         }
     }
-} 
+}
